@@ -17,8 +17,51 @@ def composer(file):
 		print("%s: %d" % (k, v))
 	
 def century(file):
-	# todo
-	print('century')
+	r = re.compile("Composition Year: (.*)(\d{4})(.*)")
+	
+	r2 = re.compile("Composition Year: (\d{2})th century(.*)")
+	
+	r1 = re.compile("(\d{4})(.*)")
+	counter = Counter()
+	
+	for line in file:
+		m = r.match(line)
+		m1 = r2.match(line)
+		if m:
+			group1 = m.group(1).strip()
+			year = r1.match(group1)
+			if year:
+				counter[(int(year.group(1).strip()[:2])+1)] += 1
+				
+			group2 = m.group(2).strip()
+			year = r1.match(group2)
+			if year:
+				counter[(int(year.group(1).strip()[:2])+1)] += 1
+				
+			group3 = m.group(3).strip()
+			year = r1.match(group3)
+			if year:
+				counter[(int(year.group(1).strip()[:2])+1)] += 1
+		elif m1:
+			century = m1.group(1).strip()
+			counter[int(century)] += 1
+				
+	for k, v in counter.items():
+		print("%sth century: %d" % (k, v))
+		
+def key(file):
+	r = re.compile("Key: (.*)" )
+	counter = Counter()
+	
+	for line in file:
+		m = r.match(line)
+		if m:
+			name = m.group(1).strip()
+			for n in name.split(';'):
+	 			counter[n.strip()] += 1
+	 
+	for k, v in counter.items():
+		print("%s: %d" % (k, v))
 
 def main():	
 	file = sys.argv[1]
@@ -30,5 +73,7 @@ def main():
 		composer(f)
 	elif (stat == 'century'):
 		century(f)
+	elif (stat == 'key'):
+		key(f)
 
 main()
