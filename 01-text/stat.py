@@ -58,10 +58,15 @@ def key(file):
 		if m:
 			name = m.group(1).strip()
 			for n in name.split(';'):
-	 			counter[n.strip()] += 1
+				for n1 in n.split(','):
+					for n2 in n1.split(' '):
+						if (n2.strip() == "c"):
+							counter[n2.strip()] += 1
+						elif (n2.strip()=="C"):
+							counter[n2.strip()] += 1
 	 
 	for k, v in counter.items():
-		print("%s: %d" % (k, v))
+		print("Key %s: %d" % (k, v))
 
 def main():	
 	file = sys.argv[1]
