@@ -14,7 +14,6 @@ def load(filename):
 
     file = open(filename, 'r')
 
-
     r_print_id = re.compile("Print Number: (.*)")
     r_composer = re.compile("Composer: (.*)")
     r_title = re.compile("Title: (.*)")
@@ -243,10 +242,27 @@ def load_incipit(match):
 
 
 def load_voice(match):
-    voice_id = match.group(1).strip()
     voice = match.group(2).strip()
-   # print(voice_id, voice)
-    return Voice("test", "test")
+    r1 = re.compile("((.*)--(.*))")
+    r2 = re.compile("((.*)-(.*))")
+
+    range = ""
+    name = ""
+
+    if (not (voice == "")):
+        for n in voice.split(';'):
+            for m in n.split(','):
+                voice_item = m.strip()
+                match = r1.match(voice_item)
+                match_1 = r2.match(voice_item)
+                if match:
+                    range = (match.group(0)) if range == "" else (range + ", " + match.group(0))
+                elif match_1:
+                    range = (match_1.group(0).replace("-", "--")) if range == "" else (range + "; " + match_1.group(0).replace("-", "--"))
+                else:
+                    name = m.strip() if name == "" else (name + ", " + m.strip())
+
+    return Voice(name if not (name == "") else None, range if not (range == "") else None)
 
 
 def main():

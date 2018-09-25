@@ -67,7 +67,7 @@ class Print:
                 if voice.range:
                     print (voice.range, sep='', end='')
                 if voice.name:
-                    print (", ", voice.name, sep='', end='')
+                    print ("; ", voice.name, sep='', end='')
                 print ("")
 
         if not (self.partiture == None):
