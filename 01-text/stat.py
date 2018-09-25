@@ -17,9 +17,9 @@ def composer(file):
 			for n in name.split(';'):
 				match = r1.match(n);
 				if match:
-	 				counter[match.group(1).strip()] += 1
+					counter[match.group(1).strip()] += 1
 				elif (not (n =="")):
-	 				counter[n.strip()] += 1
+					counter[n.strip()] += 1
 	 
 	for k, v in counter.items():
 		print("%s: %d" % (k, v))
