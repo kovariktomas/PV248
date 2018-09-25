@@ -23,68 +23,72 @@ def load(filename):
     r_composition_year = re.compile("Composition Year: (.*)")
     r_edition = re.compile("Edition: (.*)")
     r_editor = re.compile("Editor: (.*)")
-    rVoice = re.compile("Voice (\d*): (.*)")
+    r_voice = re.compile("Voice (\d*): (.*)")
     r_partiture = re.compile("Partiture: (.*)")
     r_incipit = re.compile("Incipit: (.*)")
 
+    r_new_entity = re.compile("\n")
     prints = []
 
-    composition = None
+    voices = []
+    composition_class = Composition(None, None, None, None, None, None, None)
+    edition_class = Edition(None, None, None)
+    print_class = Print(None, None, None)
+
 
     for line in file:
         m = r_print_id.match(line)
         if m:
             print_id = load_print_id(m)
-            print_class = Print(None, print_id, None)
-            prints.append(print_class)
+            print_class.print_id = print_id
             continue
 
         m = r_composer.match(line)
         if m:
             composition_authors = load_composer(m)
-            composition = Composition(None, None, None, None, None, None, composition_authors)
+            composition_class.authors = composition_authors
             continue
 
         m = r_title.match(line)
         if m:
             title = load_title(m)
-            composition.name = title
+            composition_class.name = title
             continue
 
         m = r_genre.match(line)
         if m:
             genre = load_genre(m)
-            composition.genre = genre
+            composition_class.genre = genre
             continue
 
         m = r_key.match(line)
         if m:
             key = load_key(m)
-            composition.key = key
+            composition_class.key = key
             continue
 
         m = r_composition_year.match(line)
         if m:
             year = load_composition_year(m)
-            composition.key = year
+            composition_class.year = year
             continue
 
         m = r_partiture.match(line)
         if m:
             paritture = load_partiture(m)
-            Print.partiture = paritture
+            print_class.partiture = paritture
             continue
 
         m = r_incipit.match(line)
         if m:
             incipit = load_incipit(m)
-            composition.key = incipit
+            composition_class.incipit = incipit
             continue
 
         m = r_edition.match(line)
         if m:
             edition = load_edition(m)
-            edition_class = Edition(composition, None, edition)
+            edition_class.name = edition
             continue
 
         m = r_editor.match(line)
@@ -93,11 +97,29 @@ def load(filename):
             edition_class.authors = authors
             continue
 
+        m = r_voice.match(line)
 
+        if m:
+            voice = load_voice(m)
+            voices.append(voice)
+            composition_class.voices = voices
+            continue
 
+        m = r_new_entity.match(line)
+        if m:
+            edition_class.composition = composition_class
+            print_class.edition = edition_class
+            if not (print_class.print_id == None):
+                prints.append(print_class)
 
-    for print_instance in prints:
-        print("Print Number:", print_instance.print_id, print_instance.edition)
+                voices = []
+                composition_class = Composition(None, None, None, None, None, None, None)
+                edition_class = Edition(None, None, None)
+                print_class = Print(None, None, None)
+
+            continue
+
+    return prints
 
 
 def load_print_id(match):
@@ -219,9 +241,20 @@ def load_incipit(match):
     else:
         return None
 
+
+def load_voice(match):
+    voice_id = match.group(1).strip()
+    voice = match.group(2).strip()
+   # print(voice_id, voice)
+    return Voice("test", "test")
+
+
 def main():
     filename = sys.argv[1]
-    load(filename)
+    prints = load(filename)
+
+    for print_instance in prints:
+        print_instance.format()
 
 
 main()
