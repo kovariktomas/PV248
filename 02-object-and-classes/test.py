@@ -138,12 +138,16 @@ def load_composer(match):
             person_name = match.group(1).strip()
             match_borned = r_borned.match(match.group(2).strip())
             if match_borned:
-                borned = match_borned.group(2).strip()
-                match_died = r_died.match(match_borned.group(3).strip())
-                if match_died:
-                    died = match_died.group(2).strip()
+                if (match_borned.group(1) == "+"):
+                    borned = None
+                    died = match_borned.group(2).strip()
                 else:
-                    died = None
+                    borned = match_borned.group(2).strip()
+                    match_died = r_died.match(match_borned.group(3).strip())
+                    if match_died:
+                        died = match_died.group(2).strip()
+                    else:
+                        died = None
             else:
                 borned = None
                 died = None
@@ -206,12 +210,16 @@ def load_editor(match):
             person_name = match.group(1).strip()
             match_borned = r_borned.match(match.group(2).strip())
             if match_borned:
-                borned = match_borned.group(2).strip()
-                match_died = r_died.match(match_borned.group(3).strip())
-                if match_died:
-                    died = match_died.group(2).strip()
+                if (match_borned.group(1) == "+"):
+                    borned = None
+                    died = match_borned.group(2).strip()
                 else:
-                    died = None
+                    borned = match_borned.group(2).strip()
+                    match_died = r_died.match(match_borned.group(3).strip())
+                    if match_died:
+                        died = match_died.group(2).strip()
+                    else:
+                        died = None
             else:
                 borned = None
                 died = None
@@ -244,7 +252,6 @@ def load_incipit(match):
 def load_voice(match):
     voice = match.group(2).strip()
     r1 = re.compile("((.*)--(.*))")
-    r2 = re.compile("((.*)-(.*))")
 
     range = ""
     name = ""
@@ -254,11 +261,8 @@ def load_voice(match):
             for m in n.split(','):
                 voice_item = m.strip()
                 match = r1.match(voice_item)
-                match_1 = r2.match(voice_item)
                 if match:
                     range = (match.group(0)) if range == "" else (range + ", " + match.group(0))
-                elif match_1:
-                    range = (match_1.group(0).replace("-", "--")) if range == "" else (range + "; " + match_1.group(0).replace("-", "--"))
                 else:
                     name = m.strip() if name == "" else (name + ", " + m.strip())
 
