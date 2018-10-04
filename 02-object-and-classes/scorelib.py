@@ -12,7 +12,7 @@ class Print:
             for author in self.edition.composition.authors:
                 if author.name and first:
                     first = False
-                    print("Composer:", end='')
+                    print("Composer: ", end='')
                 else:
                     print("; ", end='')
 
