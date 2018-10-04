@@ -12,7 +12,7 @@ class Print:
             for author in self.edition.composition.authors:
                 if author.name and first:
                     first = False
-                    print("Composer: ", end='')
+                    print("Composer:", end=' ')
                 else:
                     print("; ", end='')
 
@@ -66,6 +66,9 @@ class Print:
                 i = i + 1
                 if voice.range:
                     print (voice.range, sep='', end='')
+                else:
+                    if voice.name:
+                        print ("None", sep='', end='')
                 if voice.name:
                     print ("; ", voice.name, sep='', end='')
                 print ("")
