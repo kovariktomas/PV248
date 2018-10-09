@@ -366,6 +366,23 @@ def insertEditionAutor(editorId, editionId, cur):
     else:
         return storedEditionAutor[0]
 
+def insertPrint(print_instance, editionId, cur):
+
+    id = "NULL" if print_instance.print_id == None else print_instance.print_id
+
+    # how to get information about partitue?? in cv02 is partiture bolean
+    partiture = "Y" if print_instance.partiture else "N"
+
+    printRow = (id, partiture, editionId)
+
+    cur.execute('SELECT * FROM print WHERE id=? and partiture=? and edition=?', printRow)
+    storedPrint = cur.fetchone()
+    if storedPrint == None:
+        cur.execute('INSERT INTO print ("id", "partiture", "edition") VALUES (?,?,?)', printRow)
+        return cur.lastrowid
+    else:
+        return storedPrint[0]
+
 def main():
     filename = sys.argv[1]
     prints = load(filename)
@@ -439,5 +456,9 @@ def main():
         conn.commit()
 
         #insert print
+
+        cur = conn.cursor()
+        printId = insertPrint(print_instance, editionId, cur)
+        conn.commit()
 
 main()
