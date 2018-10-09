@@ -308,6 +308,64 @@ def insertScore(print_instance, cur):
         return storedScore[0]
 
 
+def insertVoice(voice, number, scoreId, cur):
+
+    name = "NULL" if voice.name == None else voice.name
+    range = "NULL" if voice.range == None else voice.range
+
+    voice = (name, range, number, scoreId)
+
+    cur.execute('SELECT * FROM voice WHERE name=? and range=? and number=? and score=?', voice)
+    storedScore = cur.fetchone()
+    if storedScore == None:
+        cur.execute('INSERT INTO voice ("name", "range", "number", "score") VALUES (?,?,?,?)', voice)
+        return cur.lastrowid
+    else:
+        return storedScore[0]
+
+def insertEdition(print_instance, scoreId, cur):
+
+    name = "NULL" if print_instance.edition.name == None else print_instance.edition.name
+
+    #todo what is edition year???
+    year = "NULL" if print_instance.edition.composition.year == None else print_instance.edition.composition.year
+
+    edition = (name, year, scoreId)
+
+    cur.execute('SELECT * FROM edition WHERE name=? and year=? and score=?', edition)
+    storedEdition = cur.fetchone()
+    if storedEdition == None:
+        cur.execute('INSERT INTO edition ("name", "year", "score") VALUES (?,?,?)', edition)
+        return cur.lastrowid
+    else:
+        return storedEdition[0]
+
+
+def insertScoreAutor(composerId, scoreId, cur):
+
+    scoreAutor = (composerId, scoreId)
+
+    cur.execute('SELECT * FROM score_author WHERE composer=? and score=?', scoreAutor)
+    storedScoreAutor = cur.fetchone()
+    if storedScoreAutor == None:
+        cur.execute('INSERT INTO score_author ("composer", "score") VALUES (?,?)', scoreAutor)
+        return cur.lastrowid
+    else:
+        return storedScoreAutor[0]
+
+
+def insertEditionAutor(editorId, editionId, cur):
+
+    editionAutor = (editorId, editionId)
+
+    cur.execute('SELECT * FROM edition_author WHERE editor=? and edition=?', editionAutor)
+    storedEditionAutor = cur.fetchone()
+    if storedEditionAutor == None:
+        cur.execute('INSERT INTO edition_author ("editor", "edition") VALUES (?,?)', editionAutor)
+        return cur.lastrowid
+    else:
+        return storedEditionAutor[0]
+
 def main():
     filename = sys.argv[1]
     prints = load(filename)
@@ -343,17 +401,43 @@ def main():
                 editorsId.append(insertPerson(autor, cur))
                 conn.commit()
 
+        #insert score
+        cur = conn.cursor()
+        scoreId = insertScore(print_instance, cur)
+        conn.commit()
+
+        #insert voices
         cur = conn.cursor()
 
-        scoreId = insertScore(print_instance, cur)
-        print(scoreId)
+        if print_instance.edition.composition.voices:
+            voicesId = []
+            i = 1;
+            for voice in print_instance.edition.composition.voices:
+                voicesId.append(insertVoice(voice, i, scoreId, cur))
+                i += 1
+            conn.commit()
 
+        #insert edition
+
+        cur = conn.cursor()
+        editionId = insertEdition(print_instance, scoreId, cur)
         conn.commit()
 
 
+        #insert score_autor
+        cur = conn.cursor()
+        for composerId in composersId:
+            insertScoreAutor(composerId, scoreId, cur)
 
-        #print_instance.format()
+        conn.commit()
 
+        #insert edition_autor
+        cur = conn.cursor()
+        for editorId in editorsId:
+            insertEditionAutor(editorId, editionId, cur)
 
+        conn.commit()
+
+        #insert print
 
 main()
