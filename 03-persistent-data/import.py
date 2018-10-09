@@ -271,6 +271,7 @@ def load_voice(match):
     return Voice(name if not (name == "") else None, range if not (range == "") else None)
 
 
+#insert person and check duplicity
 def insertPerson(autor, cur):
     personName = (autor.name,)
     cur.execute('SELECT * FROM person WHERE name=?', personName)
@@ -279,11 +280,32 @@ def insertPerson(autor, cur):
         person = (
         autor.name, "NULL" if autor.born == None else autor.born, "NULL" if autor.died == None else autor.died)
         cur.execute('INSERT INTO person ("name", "born", "died") VALUES (?,?,?)', person)
+        return cur.lastrowid
     else:
         if storedPerson[1] == "NULL" and autor.born != None:
             cur.execute('UPDATE person SET "born" = ? WHERE name = ?', (autor.born, autor.name))
         if storedPerson[2] == "NULL" and autor.died != None:
             cur.execute('UPDATE person SET "died" = ? WHERE name = ?', (autor.died, autor.name))
+        return storedPerson[0]
+
+
+
+def insertScore(print_instance, cur):
+    name = "NULL" if print_instance.edition.composition.name == None else print_instance.edition.composition.name
+    genre = "NULL" if print_instance.edition.composition.genre == None else print_instance.edition.composition.genre
+    key = "NULL" if print_instance.edition.composition.key == None else print_instance.edition.composition.key
+    incipit = "NULL" if print_instance.edition.composition.incipit == None else print_instance.edition.composition.incipit
+    year = "NULL" if print_instance.edition.composition.year == None else print_instance.edition.composition.year
+
+    score = (name, genre, key, incipit, year)
+
+    cur.execute('SELECT * FROM score WHERE name=? and genre=? and key=? and incipit=? and year=?', score)
+    storedScore = cur.fetchone()
+    if storedScore == None:
+        cur.execute('INSERT INTO score ("name", "genre", "key", "incipit", "year") VALUES (?,?,?,?,?)', score)
+        return cur.lastrowid
+    else:
+        return storedScore[0]
 
 
 def main():
@@ -303,20 +325,31 @@ def main():
     sql = schemaFile.read()
     conn.executescript(sql)
 
-    #insert persons
+
     for print_instance in prints:
 
+        #insert persons (composers)
         if print_instance.edition.composition.authors:
+            composersId = []
             for autor in print_instance.edition.composition.authors:
                 cur = conn.cursor()
-                insertPerson(autor, cur)
+                composersId.append(insertPerson(autor, cur))
                 conn.commit()
-
+        # insert persons (editors)
         if print_instance.edition.authors:
+            editorsId = []
             for autor in print_instance.edition.authors:
                 cur = conn.cursor()
-                insertPerson(autor, cur)
+                editorsId.append(insertPerson(autor, cur))
                 conn.commit()
+
+        cur = conn.cursor()
+
+        scoreId = insertScore(print_instance, cur)
+        print(scoreId)
+
+        conn.commit()
+
 
 
         #print_instance.format()
