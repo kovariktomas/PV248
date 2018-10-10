@@ -14,10 +14,11 @@ class Print:
                     first = False
                     print("Composer:", end=' ')
                 else:
-                    print("; ", end='')
+                    print(";", end=' ', sep='')
 
                 if author.name:
-                    print (author.name, sep='', end='')
+                    print (author.name.strip(), sep='', end='')
+
                 if ((not (author.born == None)) and (not (author.died == None))):
                     print (" (", author.born, "--", author.died, ")", end='', sep='')
                 elif author.born:
