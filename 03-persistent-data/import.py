@@ -302,13 +302,13 @@ def insertScore(print_instance, cur):
 
     score = (name, genre, key, incipit, year)
 
-    cur.execute('SELECT * FROM score WHERE name=? and genre=? and key=? and incipit=? and year=?', score)
-    storedScore = cur.fetchone()
-    if storedScore == None:
-        cur.execute('INSERT INTO score ("name", "genre", "key", "incipit", "year") VALUES (?,?,?,?,?)', score)
-        return cur.lastrowid
-    else:
-        return storedScore[0]
+    #cur.execute('SELECT * FROM score WHERE name=? and genre=? and key=? and incipit=? and year=?', score)
+    #storedScore = cur.fetchone()
+    #if storedScore == None:
+    cur.execute('INSERT INTO score ("name", "genre", "key", "incipit", "year") VALUES (?,?,?,?,?)', score)
+    return cur.lastrowid
+    #else:
+    #    return storedScore[0]
 
 
 def insertVoice(voice, number, scoreId, cur):
@@ -318,13 +318,13 @@ def insertVoice(voice, number, scoreId, cur):
 
     voice = (name, range, number, scoreId)
 
-    cur.execute('SELECT * FROM voice WHERE name=? and range=? and number=? and score=?', voice)
-    storedScore = cur.fetchone()
-    if storedScore == None:
-        cur.execute('INSERT INTO voice ("name", "range", "number", "score") VALUES (?,?,?,?)', voice)
-        return cur.lastrowid
-    else:
-        return storedScore[0]
+    #cur.execute('SELECT * FROM voice WHERE name=? and range=? and number=? and score=?', voice)
+    #storedScore = cur.fetchone()
+    #if storedScore == None:
+    cur.execute('INSERT INTO voice ("name", "range", "number", "score") VALUES (?,?,?,?)', voice)
+    return cur.lastrowid
+    #else:
+    #    return storedScore[0]
 
 def insertEdition(print_instance, scoreId, cur):
 
@@ -334,39 +334,39 @@ def insertEdition(print_instance, scoreId, cur):
 
     edition = (name, year, scoreId)
 
-    cur.execute('SELECT * FROM edition WHERE name=? and year=? and score=?', edition)
-    storedEdition = cur.fetchone()
-    if storedEdition == None:
-        cur.execute('INSERT INTO edition ("name", "year", "score") VALUES (?,?,?)', edition)
-        return cur.lastrowid
-    else:
-        return storedEdition[0]
+    #cur.execute('SELECT * FROM edition WHERE name=? and year=? and score=?', edition)
+    #storedEdition = cur.fetchone()
+    #if storedEdition == None:
+    cur.execute('INSERT INTO edition ("name", "year", "score") VALUES (?,?,?)', edition)
+    return cur.lastrowid
+    #else:
+    #    return storedEdition[0]
 
 
 def insertScoreAutor(composerId, scoreId, cur):
 
     scoreAutor = (composerId, scoreId)
 
-    cur.execute('SELECT * FROM score_author WHERE composer=? and score=?', scoreAutor)
-    storedScoreAutor = cur.fetchone()
-    if storedScoreAutor == None:
-        cur.execute('INSERT INTO score_author ("composer", "score") VALUES (?,?)', scoreAutor)
-        return cur.lastrowid
-    else:
-        return storedScoreAutor[0]
+    #cur.execute('SELECT * FROM score_author WHERE composer=? and score=?', scoreAutor)
+    #storedScoreAutor = cur.fetchone()
+    #if storedScoreAutor == None:
+    cur.execute('INSERT INTO score_author ("composer", "score") VALUES (?,?)', scoreAutor)
+    return cur.lastrowid
+    #else:
+    #    return storedScoreAutor[0]
 
 
 def insertEditionAutor(editorId, editionId, cur):
 
     editionAutor = (editorId, editionId)
 
-    cur.execute('SELECT * FROM edition_author WHERE editor=? and edition=?', editionAutor)
-    storedEditionAutor = cur.fetchone()
-    if storedEditionAutor == None:
-        cur.execute('INSERT INTO edition_author ("editor", "edition") VALUES (?,?)', editionAutor)
-        return cur.lastrowid
-    else:
-        return storedEditionAutor[0]
+    #cur.execute('SELECT * FROM edition_author WHERE editor=? and edition=?', editionAutor)
+    #storedEditionAutor = cur.fetchone()
+    #if storedEditionAutor == None:
+    cur.execute('INSERT INTO edition_author ("editor", "edition") VALUES (?,?)', editionAutor)
+    return cur.lastrowid
+    #else:
+    #    return storedEditionAutor[0]
 
 def insertPrint(print_instance, editionId, cur):
 
@@ -376,13 +376,14 @@ def insertPrint(print_instance, editionId, cur):
 
     printRow = (id, partiture, editionId)
 
-    cur.execute('SELECT * FROM print WHERE id=? and partiture=? and edition=?', printRow)
-    storedPrint = cur.fetchone()
-    if storedPrint == None:
-        cur.execute('INSERT INTO print ("id", "partiture", "edition") VALUES (?,?,?)', printRow)
-        return cur.lastrowid
-    else:
-        return storedPrint[0]
+    #cur.execute('SELECT * FROM print WHERE id=?', id)
+    #storedPrint = cur.fetchone()
+    #if storedPrint == None:
+    cur.execute('INSERT INTO print ("id", "partiture", "edition") VALUES (?,?,?)', printRow)
+    return cur.lastrowid
+    #else:
+    #    print("duplicita")
+    #    return storedPrint[0]
 
 def main():
     filename = sys.argv[1]
