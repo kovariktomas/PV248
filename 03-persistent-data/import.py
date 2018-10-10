@@ -11,7 +11,6 @@ from scorelib import Voice
 from scorelib import Edition
 
 
-
 def load(filename):
 
     file = open(filename, 'r')
@@ -254,6 +253,7 @@ def load_incipit(match):
 def load_voice(match):
     voice = match.group(2).strip()
     r1 = re.compile("((.*)--(.*))")
+    r2 = re.compile("(None)")
 
     range = ""
     name = ""
@@ -263,8 +263,11 @@ def load_voice(match):
             for m in n.split(','):
                 voice_item = m.strip()
                 match = r1.match(voice_item)
+                match1 = r2.match(voice_item)
                 if match:
                     range = (match.group(0)) if range == "" else (range + ", " + match.group(0))
+                elif match1:
+                    range = ""
                 else:
                     name = m.strip() if name == "" else (name + ", " + m.strip())
 
