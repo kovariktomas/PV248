@@ -330,8 +330,7 @@ def insertEdition(print_instance, scoreId, cur):
 
     name = "NULL" if print_instance.edition.name == None else print_instance.edition.name
 
-    #todo what is edition year???
-    year = "NULL" if print_instance.edition.composition.year == None else print_instance.edition.composition.year
+    year = "NULL"
 
     edition = (name, year, scoreId)
 
@@ -373,7 +372,6 @@ def insertPrint(print_instance, editionId, cur):
 
     id = "NULL" if print_instance.print_id == None else print_instance.print_id
 
-    # how to get information about partitue?? in cv02 is partiture bolean
     partiture = "Y" if print_instance.partiture else "N"
 
     printRow = (id, partiture, editionId)
