@@ -12,6 +12,9 @@ from scorelib import Edition
 
 
 def load(filename):
+    with open(filename, "a") as myfile:
+        myfile.write("\n")
+        myfile.close()
 
     file = open(filename, 'r')
 
