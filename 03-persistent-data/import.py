@@ -279,19 +279,19 @@ def load_voice(match):
 
 #insert person and check duplicity
 def insertPerson(autor, cur):
-    personName = (autor.name,)
+    personName = (autor.name.strip(),)
     cur.execute('SELECT * FROM person WHERE name=?', personName)
     storedPerson = cur.fetchone()
     if storedPerson == None:
         person = (
-        autor.name, "NULL" if autor.born == None else autor.born, "NULL" if autor.died == None else autor.died)
+        autor.name.strip(), "NULL" if autor.born == None else autor.born, "NULL" if autor.died == None else autor.died)
         cur.execute('INSERT INTO person ("name", "born", "died") VALUES (?,?,?)', person)
         return cur.lastrowid
     else:
         if storedPerson[1] == "NULL" and autor.born != None:
-            cur.execute('UPDATE person SET "born" = ? WHERE name = ?', (autor.born, autor.name))
+            cur.execute('UPDATE person SET "born" = ? WHERE name = ?', (autor.born, autor.name.strip()))
         if storedPerson[2] == "NULL" and autor.died != None:
-            cur.execute('UPDATE person SET "died" = ? WHERE name = ?', (autor.died, autor.name))
+            cur.execute('UPDATE person SET "died" = ? WHERE name = ?', (autor.died, autor.name.strip()))
         return storedPerson[0]
 
 
