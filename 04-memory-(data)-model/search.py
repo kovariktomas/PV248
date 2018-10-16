@@ -77,9 +77,9 @@ def main():
                 editor_instance = {}
 
                     #print ("row", cnt)
-                editor_instance["Name"] = editionAuthor[6]
-                editor_instance["Borned"] = editionAuthor[4]
-                editor_instance["Died"] = editionAuthor[5]
+                editor_instance["name"] = editionAuthor[6]
+                editor_instance["born"] = editionAuthor[4]
+                editor_instance["died"] = editionAuthor[5]
                 editors.append(editor_instance)
                 #if editionAuthor[4] != "NULL":
                 #     editor += "(" + str(editionAuthor[4]) + "-"
@@ -108,9 +108,9 @@ def main():
             for composerAutor in composerAutors:
                 composer_instance = {}
 
-                composer_instance["Name"] = composerAutor[6]
-                composer_instance["Borned"] = composerAutor[4]
-                composer_instance["Died"] = composerAutor[5]
+                composer_instance["name"] = composerAutor[6]
+                composer_instance["born"] = composerAutor[4]
+                composer_instance["died"] = composerAutor[5]
                 composers.append(composer_instance)
 
             printCursor = conn.cursor()
