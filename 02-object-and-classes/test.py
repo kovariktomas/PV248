@@ -34,8 +34,14 @@ def load(filename):
     edition_class = Edition(None, None, None)
     print_class = Print(None, None, None)
 
+    cnt = 1
+    line = file.readline()
 
-    for line in file:
+    while line:
+        if cnt > 1:
+            line = file.readline()
+        cnt += 1
+    #for line in file:
         m = r_print_id.match(line)
         if m:
             print_id = load_print_id(m)
@@ -105,7 +111,7 @@ def load(filename):
             continue
 
         m = r_new_entity.match(line)
-        if m:
+        if m or line == "":
             edition_class.composition = composition_class
             print_class.edition = edition_class
             if not (print_class.print_id == None):

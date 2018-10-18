@@ -33,7 +33,7 @@ def main():
         # composer name
         dataForJson[composer[3]] = prints
 
-        print(composer)
+        #print(composer)
         composerId = (composer[0], )
         compositionCutsor = conn.cursor()
         compositionCutsor.execute('SELECT * FROM score_author sca \
@@ -156,7 +156,7 @@ def main():
             print_instance["Partiture"] = print_entity[1]
             print_instance["Incipit"] = composition[7]
             prints.append(print_instance)
-        print ("r")
+        #print ("r")
 
         #print(" ")
 

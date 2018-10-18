@@ -7609,3 +7609,12 @@ Edition: Zenemükiadó Zállalai
 Voice 1: None; bassoon
 Partiture: no
 
+Print Number: 892
+Composer: Pachelbel, Johann
+Title: Was Gott tut, das ist wohlgetan
+Genre: arrangement, cantate
+Key: Es
+Edition: BES Brno
+Voice 1: None; oboe d'amore 1
+Partiture: no
+
