@@ -128,7 +128,7 @@ def load(filename):
 
 
 def load_print_id(match):
-    print_id = match.group(1).strip()
+    print_id = int(match.group(1).strip())
     return print_id
 
 
