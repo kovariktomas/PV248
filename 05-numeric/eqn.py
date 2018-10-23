@@ -56,7 +56,7 @@ def main():
         cnt +=1
 
     #nactena leva strana
-    print (left_ok)
+    #print (left_ok)
 
     #promenne, ktere existuji v zadani
     variables_in_file = []
@@ -65,14 +65,14 @@ def main():
             if k not in variables_in_file:
                 variables_in_file.append(k)
 
-    print (sorted(variables_in_file))
+    #print (sorted(variables_in_file))
 
     left_side = []
 
     for row in left_ok:
         set = []
         for key in sorted(variables_in_file):
-            print (key)
+            #print (key)
             try:
                 value = row[key]
                 set.append(value)
@@ -84,27 +84,40 @@ def main():
     #print(left_side)
     #print(right)
 
-    #solution 
-    a = np.array(left_side)
-    b = np.array(right)
-    x = np.linalg.solve(a, b)
+    #make copy of array
+    dimensions_test = np.copy(left_side)
+    coef_matrix = left_side
+    augmented_matrix = np.c_[dimensions_test, right]
+    # https://en.wikipedia.org/wiki/Rouché–Capelli_theorem
+    if np.linalg.matrix_rank(coef_matrix) == np.linalg.matrix_rank(augmented_matrix):
+        #print("ma reseni")
+        n = len(variables_in_file)
 
+        rank_a = np.linalg.matrix_rank(coef_matrix)
 
-    print("solution:", end='')
-    cnt = 0
-    for var in sorted(variables_in_file):
-        if cnt == 0:
-            print (" ", var, " = ", x[cnt], end='', sep='')
+        if n == rank_a:
+            #print ("prave jedno reseni")
+            a = np.array(left_side)
+            b = np.array(right)
+            x = np.linalg.solve(a, b)
+
+            print("solution:", end='')
+            cnt = 0
+            for var in sorted(variables_in_file):
+                if cnt == 0:
+                    print (" ", var, " = ", x[cnt], end='', sep='')
+                else:
+                    print (", ", var, " = ", x[cnt], end='', sep='')
+                cnt += 1
+            exit(0)
         else:
-            print (", ", var, " = ", x[cnt], end='', sep='')
-        cnt += 1
-
-
-
-
-    #print(line, end='', sep='')
-
-
+            print ("solution space dimension:", n-rank_a, end='')
+            exit(0)
+        #print (np.linalg.matrix_rank(coef_matrix))
+        #print (np.linalg.matrix_rank(augmented_matrix))
+    else:
+        print("no solution", end='')
+        exit(0)
 
 
 main()
