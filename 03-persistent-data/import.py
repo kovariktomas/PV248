@@ -461,18 +461,16 @@ def main():
 
 
     for print_instance in prints:
-
+        composersId = []
         #insert persons (composers)
         if print_instance.edition.composition.authors:
-            composersId = []
             for autor in print_instance.edition.composition.authors:
                 cur = conn.cursor()
                 composersId.append(insertPerson(autor, cur))
                 conn.commit()
-
+        editorsId = []
         # insert persons (editors)
         if print_instance.edition.authors:
-            editorsId = []
             for autor in print_instance.edition.authors:
                 cur = conn.cursor()
                 editorsId.append(insertPerson(autor, cur))
@@ -501,8 +499,8 @@ def main():
         #insert voices
         cur = conn.cursor()
 
+        voicesId = []
         if print_instance.edition.composition.voices:
-            voicesId = []
             i = 1;
             for voice in print_instance.edition.composition.voices:
                 voicesId.append(insertVoice(voice, i, scoreId, cur))
