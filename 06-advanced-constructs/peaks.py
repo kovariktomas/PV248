@@ -4,6 +4,7 @@ import numpy as np
 import collections
 import wave
 import struct
+import math
 
 #hodnoty na vstupu sign
 def main():
@@ -13,19 +14,19 @@ def main():
 
     #MONO = 1 STEREO = 2
     wav.getnchannels()
-    print("pocet kanalu: ", wav.getnchannels())
+    #print("pocet kanalu: ", wav.getnchannels())
     num_channels = wav.getnchannels()
 
     #sampling frequency
-    print("vzorkovaci frekvence", wav.getframerate())
+    #print("vzorkovaci frekvence", wav.getframerate())
     sampling_frequency = wav.getframerate()
 
     #nframes
-    print("pocet vzorku:", wav.getnframes())
+    #print("pocet vzorku:", wav.getnframes())
     num_frames = wav.getnframes()
 
 
-    print("pocet bitu:", wav.getsampwidth())
+    #print("pocet bitu:", wav.getsampwidth())
     sample_width = wav.getsampwidth()
 
     raw_data = wav.readframes(wav.getnframes())  # Returns byte data
@@ -88,7 +89,7 @@ def main():
             items.append(np.abs(item))
 
         average = sum(items)/len(fft)
-        print(average)
+        #print(average)
 
         max_amplitude = 0
         max_i = -1
@@ -110,17 +111,17 @@ def main():
                     min_i = i
 
         if min_amplitude_full_sample == None or min_amplitude_full_sample > min_amplitude:
-            print ("prepis_min")
+            #print ("prepis_min")
             min_amplitude_full_sample = min_amplitude
             min_i_full_sample = min_i
         if max_amplitude_full_sample == None or max_amplitude_full_sample < max_amplitude:
             max_amplitude_full_sample = max_amplitude
             max_i_full_sample = max_i
-        print("low_amplitude:", min_amplitude, "high_amplitude:", max_amplitude)
-        print("low_amplitude xosa:", min_i, "high_amplitude xosa:", max_i)
+        #print("low_amplitude:", min_amplitude, "high_amplitude:", max_amplitude)
+        #print("low_amplitude xosa:", min_i, "high_amplitude xosa:", max_i)
 
-    print("low_amplitude:", min_amplitude_full_sample, "high_amplitude:", max_amplitude_full_sample)
-    print("low_amplitude xosa:", min_i_full_sample, "high_amplitude xosa:", max_i_full_sample)
+    #print("low_amplitude:", min_amplitude_full_sample, "high_amplitude:", max_amplitude_full_sample)
+    #print("low_amplitude xosa:", min_i_full_sample, "high_amplitude xosa:", max_i_full_sample)
 
 
     delka = len(fft)
