@@ -90,10 +90,10 @@ def main():
         average = sum(items)/len(fft)
         print(average)
 
-        max_amplitude = average-1
+        max_amplitude = 0
         max_i = -1
 
-        min_amplitude = average-1
+        min_amplitude = 0
         min_i = -1
         #print("delka", len(fft))
         for i in range(len(fft)):
@@ -102,7 +102,7 @@ def main():
                 if (abs > max_amplitude):
                     max_amplitude = abs
                     max_i = i
-                    if (min_amplitude == average-1):
+                    if (min_amplitude == 0):
                         min_amplitude = max_amplitude
                         min_i = i
                 if (abs < min_amplitude):
@@ -121,13 +121,18 @@ def main():
 
     print("low_amplitude:", min_amplitude_full_sample, "high_amplitude:", max_amplitude_full_sample)
     print("low_amplitude xosa:", min_i_full_sample, "high_amplitude xosa:", max_i_full_sample)
-    delka = len(fft)
-    freq = delka-max_i
-    print("high: ", freq)
+
 
     delka = len(fft)
-    freq = delka - min_i
-    print("low: ", freq)
+    freq1 = delka-min_i_full_sample
+
+    delka = len(fft)
+    freq2 = delka - max_i_full_sample
+
+    if not (max_i_full_sample == -1 and min_i_full_sample == -1):
+        print("low: ", freq1, "high: ", freq2)
+    else:
+        print("no peaks")
 
 
 
