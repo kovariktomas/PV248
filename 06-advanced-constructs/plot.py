@@ -22,9 +22,9 @@ if (spf.getnchannels() == 2):
 
 print(max(signal))
 
-fft = np.fft.rfft(signal[0:44100])
+#fft = np.fft.rfft(signal[0:44100])
 
-signal = fft
+#signal = fft
 
 
 
