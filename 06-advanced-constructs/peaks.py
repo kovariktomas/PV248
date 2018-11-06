@@ -50,8 +50,9 @@ def main():
                 integer_data1.append((integer_data[i] + integer_data[i + 1]) / 2)
             integer_data = integer_data1
 
-        fft_data = np.fft.rfft(integer_data) / sampling_frequency
-
+        #fft
+        fft_data = np.fft.rfft(integer_data)
+        
         #prevod na absoultni hodnoty
         fft_data = np.abs(fft_data)
 
