@@ -3,6 +3,7 @@ import numpy as np
 import wave
 import struct
 from math import log2, pow
+#import matplotlib.pyplot as plt
 
 def frequency_to_pitch(f, a1):
     #Zdrojpro vypocet: https://www.johndcook.com/blog/2013/06/22/how-to-convert-frequency-to-pitch/
@@ -14,10 +15,14 @@ def frequency_to_pitch(f, a1):
     pitch_index = int(h % 12)
     cents = (h % 1)
     cents = int(cents * 100)
+
+    #print(h)
+    #print(cents)
+    #print(pitch_index)
     #prevod abych zobrazoval vždy nejbližší pitch name a co nejmene centu
     if cents >= 50:
         pitch_index += 1
-        cents = 100 - cents
+        cents = cents - 100
     #pohyb mezi octaves(mám 12 pitches)
     if pitch_index >= 12:
         pitch_index -= 12
@@ -96,6 +101,11 @@ def main():
         # prevod na absoultni hodnoty
         fft_data = np.abs(fft_data)
 
+        #plt.figure(1)
+        #plt.title('Signal Wave...')
+        #plt.plot(fft_data)
+        #plt.show()
+
         # vypocet prumeru
         avg = sum(fft_data) / len(fft_data)
         peak = 20 * avg
@@ -112,8 +122,11 @@ def main():
 
         for i in range(1, len(fft_data1)):
             if (fft_data1[i-1]>fft_data1[i]):
-                if clusters[-1]==0:
-                    clusters.append(fft_data1[i-1])
+                if len(clusters) > 0:
+                    if clusters[-1]==0:
+                        clusters.append(fft_data1[i-1])
+                    else:
+                        clusters.append(0)
                 else:
                     clusters.append(0)
             else:
@@ -188,7 +201,10 @@ def main():
                         print("no peaks")
                     else:
                         for k, v in pitches_in_windows[i - 1].items():
-                            print(k, "+", v, sep='', end=' ')
+                            if int(v) >= 0:
+                                print(k, "+", v, sep='', end=' ')
+                            else:
+                                print(k, v, sep='', end=' ')
                     print("\n", sep='', end='')
 
             else:
@@ -199,7 +215,10 @@ def main():
                     print("no peaks")
                 else:
                     for k, v in pitches_in_windows[i - 1].items():
-                        print(k, "+", v, sep='', end=' ')
+                        if int(v) >= 0:
+                            print(k, "+", v, sep='', end=' ')
+                        else:
+                            print(k, v, sep='', end=' ')
                 print("\n", sep='', end='')
 
     if started:
