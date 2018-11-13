@@ -24,18 +24,22 @@ def main():
             if column == "student":
                 continue
             # print("actual", column)
-            col = column.split("/")[0]
+            col = column.split("/")[0].strip()
             # print (col)
+            i += 1
+            #print (" k ")
+            #print (col, columns_fonud)
             if not (col in columns_fonud):
                 columns_fonud.append(col)
-                i += 1
-                array = file[column][1:].values
+
+                array = file[column][:].values
 
                 for j in range(i + 1, len(file.columns)):
                     colname = file.columns[j]
-                    col_tmp = colname.split("/")[0]
+                    col_tmp = colname.split("/")[0].strip()
+                    #print(j, colname, col_tmp, col)
                     if col_tmp == col:
-                        array_tmp = file[colname][1:].values
+                        array_tmp = file[colname][:].values
                         # print(array[1], array_tmp[1])
                         array = array + array_tmp
                         # print (array[1])
@@ -66,7 +70,7 @@ def main():
             if column == "student":
                 continue
 
-            array = file[column][1:].values
+            array = file[column][:].values
             mean = np.mean(array)
             median = np.median(array)
             first = np.percentile(array, 25)
@@ -90,24 +94,29 @@ def main():
 
         i = 0
         for column in file.columns:
+            #print(" ")
             if column == "student":
                 continue
             #print("actual", column)
             col = column.split("/")[-1]
             #print (col)
+            i += 1
+            #print(col, columns_fonud)
             if not (col in columns_fonud):
                 columns_fonud.append(col)
-                i += 1
-                array = file[column][1:].values
 
+                array = file[column][:].values
+                j = 0
                 for j in range(i+1,len(file.columns)):
                     colname = file.columns[j]
                     col_tmp = colname.split("/")[-1]
+                    #print(j, colname, col_tmp, col)
                     if col_tmp == col:
-                        array_tmp = file[colname][1:].values
+                        array_tmp = file[colname][:].values
                         #print(array[1], array_tmp[1])
                         array = array + array_tmp
                         #print (array[1])
+                        #print (array)
 
 
                     #print(colname)
