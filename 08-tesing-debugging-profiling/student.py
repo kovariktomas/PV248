@@ -55,7 +55,7 @@ def make_json(file, mode):
     # print(y)
     # print(dates)
 
-    semestr_start = "2018-09-18"
+    semestr_start = "2018-09-17"
     tmp = semestr_start.split("-")
     semestr_start = date(int(tmp[0]), int(tmp[1]), int(tmp[2]))
 
