@@ -45,6 +45,11 @@ def main():
                         # print (array[1])
 
                     # print(colname)
+                passed = 0
+                for item in array:
+                    if item > 0:
+                        passed += 1
+                        # print (item)
 
                 mean = np.mean(array)
                 median = np.median(array)
@@ -56,6 +61,7 @@ def main():
                 row["median"] = median
                 row["first"] = first
                 row["last"] = last
+                row["passed"] = passed
 
                 rows[col.strip()] = row
 
@@ -76,11 +82,18 @@ def main():
             first = np.percentile(array, 25)
             last = np.percentile(array, 75)
 
+            passed = 0
+            for item in array:
+                if item > 0:
+                    passed += 1
+                    #print (item)
+
             row = {}
             row["mean"] = mean
             row["median"] = median
             row["first"] = first
             row["last"] = last
+            row["passed"] = passed
 
             rows[column.strip()] = row
 
@@ -118,8 +131,12 @@ def main():
                         #print (array[1])
                         #print (array)
 
-
                     #print(colname)
+                passed = 0
+                for item in array:
+                    if item > 0:
+                        passed += 1
+                        # print (item)
 
                 mean = np.mean(array)
                 median = np.median(array)
@@ -131,6 +148,7 @@ def main():
                 row["median"] = median
                 row["first"] = first
                 row["last"] = last
+                row["passed"] = passed
 
                 rows[col.strip()] = row
 
