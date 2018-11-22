@@ -11,11 +11,20 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from io import BytesIO
 
 def client_obsluha(upstream = sys.argv[2], timeout_set=1):
+    upstream = upstream.replace("http://", "")
+    upstream = upstream.replace("https://", "")
+    upstream = upstream.split('/', 1)
+
+
     socket.setdefaulttimeout(timeout_set)
     ssl._create_default_https_context = ssl._create_unverified_context
     try:
-        conn = http.client.HTTPSConnection(upstream, context = ssl._create_unverified_context(), timeout=timeout_set)
-        conn.request("GET", "/")
+        print (upstream)
+        conn = http.client.HTTPSConnection(upstream[0], context = ssl._create_unverified_context(), timeout=timeout_set)
+        if len(upstream)==2:
+            conn.request("GET", "/"+upstream[-1])
+        else:
+            conn.request("GET", "/")
 
         r1 = conn.getresponse()
         headers = r1.getheaders()
@@ -65,15 +74,55 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         self.wfile.write(json_string)
 
     def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
-        body = self.rfile.read(json.dump(dataForJson, sys.stdout, indent=4, ensure_ascii=False))
+        self.send_response(200)
+        self.send_header('Content-type', 'application/json')
+        self.end_headers()
+
+        #print ("in post method")
+        rows = {}
+        self.data_string = self.rfile.read(int(self.headers['Content-Length']))
+
         self.send_response(200)
         self.end_headers()
-        response = BytesIO()
-        response.write(b'This is POST request. ')
-        response.write(b'Received: ')
-        response.write(body)
-        self.wfile.write(response.getvalue())
+        try:
+            data = json.loads(self.data_string)
+            print(data)
+            print(type(data))
+
+            if data["timeout"]:
+                timeout = int(data["timeout"])
+            else:
+                timeout = 1
+
+            data1, headers, code = client_obsluha(data["url"], timeout)
+
+            if not code == None:
+                rows["code"] = int(code)
+                row = {}
+                for header in headers:
+                    row[header[0]] = header[-1]
+                rows["headers"] = row
+                # print(data1)#.decode('UTF-8', "replace"))
+                try:
+                    j = json.loads(data1.replace("\n", "").replace("\\", ""))
+                    rows["json"] = j
+                except json.decoder.JSONDecodeError:
+                    j = None
+                if j == None:
+                    rows["content"] = data1
+            else:
+                rows["code"] = "timeout"
+
+        except:
+            rows["code"] = "invalid json"
+
+        dataForJson = rows
+
+        json_string = str(json.dumps(dataForJson))  # , sys.stdout, indent=4, ensure_ascii=False))
+        json_string = bytes(json_string, 'utf-8')
+        self.wfile.write(json_string)
+        return
+
 
 def main():
     port = int(sys.argv[1])
