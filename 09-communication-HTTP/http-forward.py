@@ -19,7 +19,7 @@ def client_obsluha(upstream = sys.argv[2], timeout_set=1):
     socket.setdefaulttimeout(timeout_set)
     ssl._create_default_https_context = ssl._create_unverified_context
     try:
-        print (upstream)
+        #print (upstream)
         conn = http.client.HTTPSConnection(upstream[0], context = ssl._create_unverified_context(), timeout=timeout_set)
         if len(upstream)==2:
             conn.request("GET", "/"+upstream[-1])
@@ -86,32 +86,34 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         try:
             data = json.loads(self.data_string)
-            print(data)
-            print(type(data))
+            #print(data)
+            #print(type(data))
+            if data["type"] == GET:
+                if data["timeout"]:
+                    timeout = int(data["timeout"])
+                else:
+                    timeout = 1
 
-            if data["timeout"]:
-                timeout = int(data["timeout"])
+                data1, headers, code = client_obsluha(data["url"], timeout)
+
+                if not code == None:
+                    rows["code"] = int(code)
+                    row = {}
+                    for header in headers:
+                        row[header[0]] = header[-1]
+                    rows["headers"] = row
+                    # print(data1)#.decode('UTF-8', "replace"))
+                    try:
+                        j = json.loads(data1.replace("\n", "").replace("\\", ""))
+                        rows["json"] = j
+                    except json.decoder.JSONDecodeError:
+                        j = None
+                    if j == None:
+                        rows["content"] = data1
+                else:
+                    rows["code"] = "timeout"
             else:
-                timeout = 1
-
-            data1, headers, code = client_obsluha(data["url"], timeout)
-
-            if not code == None:
-                rows["code"] = int(code)
-                row = {}
-                for header in headers:
-                    row[header[0]] = header[-1]
-                rows["headers"] = row
-                # print(data1)#.decode('UTF-8', "replace"))
-                try:
-                    j = json.loads(data1.replace("\n", "").replace("\\", ""))
-                    rows["json"] = j
-                except json.decoder.JSONDecodeError:
-                    j = None
-                if j == None:
-                    rows["content"] = data1
-            else:
-                rows["code"] = "timeout"
+                #todo post
 
         except:
             rows["code"] = "invalid json"
