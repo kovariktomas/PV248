@@ -135,8 +135,8 @@ def make_json(file, mode, file_to_reg):
         date_16 = "inf"
         date_20 = "inf"
     else:
-        date_16 = '{:%Y-%m-%d}'.format(semestr_start + timedelta(days=math.ceil(16 / regression)))
-        date_20 = '{:%Y-%m-%d}'.format(semestr_start + timedelta(days=math.ceil(20 / regression)))
+        date_16 = '{:%Y-%m-%d}'.format(semestr_start + timedelta(days=math.floor(16 / regression)))
+        date_20 = '{:%Y-%m-%d}'.format(semestr_start + timedelta(days=math.floor(20 / regression)))
 
     row = {}
     row["mean"] = mean
