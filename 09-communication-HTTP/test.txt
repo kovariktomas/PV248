@@ -1,0 +1,5 @@
+curl --header "Content-Type: application/json"   --request POST   --data '{"type":"POST","url":"https://jsonplaceholder.typicode.com/posts", "timeout": 3, "headers": {"Accept-Encoding":"utf-8"}}'   http://localhost:9100
+
+
+curl --header "Content-Type: application/json"   --request POST   --data '{"type":"GET","url":"https://jsonplaceholder.typicode.com/posts", "timeout": 3, "headers": {"Accept-Encoding":"utf-8"}}'   http://localhost:9100
+
