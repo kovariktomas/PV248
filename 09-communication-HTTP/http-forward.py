@@ -4,8 +4,6 @@ import http.client
 import socket
 import ssl
 
-
-
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 from io import BytesIO
@@ -86,7 +84,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
         self.send_response(200)
         self.end_headers()
-        if True: #try:
+        try:
             data = json.loads(self.data_string)
             #print(data)
             #print(type(data))
@@ -123,7 +121,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
                     rows["content"] = data1
             else:
                 rows["code"] = "timeout"
-        else: #except:
+        except:
             rows["code"] = "invalid json"
 
         dataForJson = rows
