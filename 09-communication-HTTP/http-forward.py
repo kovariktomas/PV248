@@ -44,7 +44,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
 
-        data1, headers, code = client_obsluha()
+        data1, headers, code = client_obsluha(upstream=sys.argv[2]+"/"+self.path)
         rows = {}
         if not code == None:
             rows["code"] = int(code)
