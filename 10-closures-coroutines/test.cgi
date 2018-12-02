@@ -14,5 +14,6 @@ print '<h2>Hello Word! This is my first CGI program</h2>'
 print '</body>'
 print '</html>'
 arguments = cgi.FieldStorage()
+print len(arguments)
 for i in arguments.keys():
     print arguments[i].value

@@ -12,6 +12,7 @@ import shutil
 
 def create_handler():
     class Handler(CGIHTTPRequestHandler):
+        cgi_directories = [sys.argv[2]]
         def do_GET(self):
             params = str(self.path).split("?", 1)[-1]
             request_path = urllib.parse.urlparse(self.path).path
@@ -19,7 +20,7 @@ def create_handler():
             if os.path.isfile(local_cgi_path):
                 suffix = ".cgi";
                 if local_cgi_path.endswith(suffix):
-                    self.cgi_info = '', local_cgi_path
+                    self.cgi_info = sys.argv[2], request_path[1:]+"?"+params
                     self.run_cgi()
                 else:
                     with open(local_cgi_path, 'rb') as f:
@@ -79,7 +80,7 @@ def create_handler():
             if os.path.isfile(local_cgi_path):
                 suffix = ".cgi"
                 if local_cgi_path.endswith(suffix):
-                    self.cgi_info = '', local_cgi_path
+                    self.cgi_info = sys.argv[2], request_path[1:] + "?" + params
                     self.run_cgi()
                 else:
                     with open(local_cgi_path, 'rb') as f:
