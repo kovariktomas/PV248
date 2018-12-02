@@ -12,7 +12,9 @@ import logging
 import subprocess
 from subprocess import Popen, PIPE
 import cgi
+import datetime
 import re
+
 
 async def get_handler(request):
     params = str(request.rel_url).split("?", 1)[-1]
@@ -22,7 +24,7 @@ async def get_handler(request):
     if os.path.isfile(local_cgi_path):
         # run cgi script
         try:
-            result = subprocess.call(['chmod', '0777',local_cgi_path])
+            result = await subprocess.call(['chmod', '0777',local_cgi_path])
         except:
             pass
 
@@ -51,7 +53,7 @@ async def post_handler(request):
     if os.path.isfile(local_cgi_path):
         # run cgi script
         try:
-            result = subprocess.call(['chmod', '0777', local_cgi_path])
+            result = await subprocess.call(['chmod', '0777', local_cgi_path])
         except:
             pass
         p = Popen([local_cgi_path, 'arg1'], stdin=PIPE, stdout=PIPE, stderr=PIPE)
@@ -69,15 +71,107 @@ async def post_handler(request):
         return web.Response(body="Soubor neexistuje!", content_type="text/html")
 
 
+#def main():
+#    port = int(sys.argv[1])
+#    dir = str(sys.argv[2])
+
+#    application = web.Application()
+#    application.add_routes([web.get('/{name:.*(.cgi|.Cgi|.CGI)$}', get_handler),
+#                            web.post('/{name:.*(.cgi|.Cgi|.CGI)$}', post_handler),
+#                            web.static("/", dir, show_index=True)])
+#    web.run_app(application, port=port)
+
+#main()
+queues = []
+
+loop = asyncio.get_event_loop()
+
+# Broadcast data is transmitted through a global Future. It can be awaited
+# by multiple clients, all of which will receive the broadcast. At each new
+# iteration, a new future is created, to be picked up by new awaiters.
+broadcast_data = loop.create_future()
+
+def broadcast(msg):
+    global broadcast_data
+    msg = str(msg)
+    print(">> ", msg)
+    if not broadcast_data.done():
+        broadcast_data.set_result(msg)
+    broadcast_data = loop.create_future()
+
+# Dummy loop to broadcast the time every 5 seconds
+async def broadcastLoop():
+    while True:
+        broadcast(datetime.datetime.now())
+#       print('#',end='',flush=True)
+        await asyncio.sleep(5)
+
+# ws broadcast loop: Each WS connection gets one of these which waits for broadcast data then sends it
+async def echo_loop(ws):
+    while True:
+        msg = await broadcast_data
+        await ws.send_str(str(msg))
+
+# web app shutdown code: cancels any open tasks and closes any open websockets
+# Only partially working
+async def on_shutdown(app):
+    print('Shutting down:', end='')
+    for t in app['tasks']:
+        print('#', end='')
+        if not t.cancelled():
+            t.cancel()
+    for ws in app['websockets']:
+        print('.', end='')
+        await ws.close(code=aiohttp.WSCloseCode.GOING_AWAY, message='Server Shutdown')
+    print(' Done!')
+
+
+#tcpServer = loop.run_until_complete(asyncio.start_server(handle_echo, '0.0.0.0', 8081, loop=loop))
+#print('Serving on {}'.format(tcpServer.sockets[0].getsockname()))
+
+# The application code:
 def main():
     port = int(sys.argv[1])
     dir = str(sys.argv[2])
 
-    application = web.Application()
-    application.add_routes([web.get('/{name:.*(.cgi|.Cgi|.CGI)$}', get_handler),
-                            web.post('/{name:.*(.cgi|.Cgi|.CGI)$}', post_handler),
-                            web.static("/", dir, show_index=True)])
-    web.run_app(application, port=port)
+    app = web.Application()
+    app['websockets'] = []
+    app['tasks'] = []
+    app.add_routes([web.get('/{name:.*(.cgi|.Cgi|.CGI)$}', get_handler),
+                    web.post('/{name:.*(.cgi|.Cgi|.CGI)$}', post_handler),
+                    web.static("/", dir, show_index=True)])
+    app.on_shutdown.append(on_shutdown)
+
+    # Kick off the 5s loop
+    tLoop=loop.create_task(broadcastLoop())
 
 
-main()
+    # Kick off the web/ws server
+    async def start():
+        global runner, site
+        runner = web.AppRunner(app)
+        await runner.setup()
+        site = web.TCPSite(runner, '0.0.0.0', port)
+        await site.start()
+
+    async def end():
+        await app.shutdown()
+
+    loop.run_until_complete(start())
+
+    # Main program "loop"
+    try:
+        loop.run_forever()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        # On exit, kill the 5s loop
+        tLoop.cancel()
+        # .. and kill the web/ws server
+        loop.run_until_complete( end() )
+
+    # Stop the main event loop
+    loop.close()
+
+if __name__ == '__main__':
+    main()
