@@ -101,7 +101,7 @@ def status_game(self, dict):
 
 def play_game(self, dict):
 
-    if True: #try:
+    try:
         request_path = urllib.parse.urlparse(self.path).path
         params = urllib.parse.urlparse(self.path).query
         params = urllib.parse.parse_qs(params)
@@ -146,7 +146,7 @@ def play_game(self, dict):
         self.send_header('Content-Type', 'application/json')
         self.end_headers()
         self.wfile.write(json_string)
-    else:#except:
+    except:
         dataForJson = {}
         dataForJson["bad"] = "Nespravne parametry!"
         json_string = str(json.dumps(dataForJson))  # , sys.stdout, indent=4, ensure_ascii=False))
