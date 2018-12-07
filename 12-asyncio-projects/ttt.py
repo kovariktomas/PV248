@@ -68,13 +68,17 @@ def status_game(self, dict):
         #print (request_path)
         #print (params)
 
-        game_id = int(params["game"][0])
-
-        game = dict[game_id]
+        try:
+            game_id = int(params["game"][0])
+            game = dict[game_id]
+        except:
+            self.send_error(404, 'Game not found')
+            return
 
         dataForJson = {}
 
         if game["winner"] != -1:
+            dataForJson["board"] = game["board"]
             dataForJson["winner"] = game["winner"]
         else:
             dataForJson["board"] = game["board"]
@@ -108,6 +112,13 @@ def play_game(self, dict):
 
         #print (request_path)
         #print (params)
+
+        try:
+            game_id = int(params["game"][0])
+            game = dict[game_id]
+        except:
+            self.send_error(404, 'Game not found')
+            return
 
         game_id = int(params["game"][0])
         player = int(params["player"][0])
@@ -198,20 +209,6 @@ def  game_ower(dict, game_id):
 
     board = dict[game_id]["board"]
 
-    players = [1, 2]
-
-    for p in players:
-        for i in range(3):
-            if board[i][0] == p and board[i][1] and board[i][2] == p:
-                dict[game_id]["winner"] = p
-            if board[0][i] == p and board[1][i] and board[2][i] == p:
-                dict[game_id]["winner"] = p
-
-        if board[0][0] == p and board[1][1] and board[2][2] == p:
-            dict[game_id]["winner"] = p
-        if board[2][0] == p and board[1][1] and board[0][2] == p:
-            dict[game_id]["winner"] = p
-
     cnt_zeros = 0
     for i in range(3):
         for j in range(3):
@@ -220,6 +217,22 @@ def  game_ower(dict, game_id):
 
     if cnt_zeros == 0:
         dict[game_id]["winner"] = 0
+
+    players = [1, 2]
+
+    for p in players:
+        for i in range(3):
+            if board[i][0] == p and board[i][1] == p and board[i][2] == p:
+                dict[game_id]["winner"] = p
+            if board[0][i] == p and board[1][i] == p and board[2][i] == p:
+                dict[game_id]["winner"] = p
+
+        if board[0][0] == p and board[1][1] == p and board[2][2] == p:
+            dict[game_id]["winner"] = p
+        if board[2][0] == p and board[1][1] == p and board[0][2] == p:
+            dict[game_id]["winner"] = p
+
+
 
 
 def create_handler():
