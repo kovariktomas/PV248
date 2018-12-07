@@ -192,6 +192,9 @@ async def drawStatus(session, game_id, player, board):
             message = "you win"
         elif int(json_data["winner"]) == 0:
             message = "draw"
+            params = []
+            params.append(session)
+            await button(str("Go back"), 460, 420, 100, 50, green, bright_green, board, game_intro, params)
         else:
             message = "you lose"
 
