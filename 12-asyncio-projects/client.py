@@ -125,6 +125,8 @@ async def main():
 
             game_id = await list_games(json_data, session)
 
+
+
             if game_id.strip().isnumeric():
                 print("Připojuji se ke hře {}...".format(game_id))
                 player = 2
@@ -139,19 +141,25 @@ async def main():
                 except AssertionError:
                     print ("Připojení ke hře se nezdařilo.")
 
-            elif game_id.strip() == "new":
-                print ("Zadej nazev: ", end="", sep="")
-                name = input()
-                player = 1
-                json_response = await fetch(session, 'http://' + host + ":" + str(port) + "/start?name="+str(name))
-                json_data = json.loads(json_response)
-                game_id = json_data["id"]
-                print("Byla zalozena nova hra s id {}.".format(game_id))
-                print("___\n___\n___")
-                await play(session, game_id, player)
-                break
             else:
-                print ("Nekorektni vstup!")
+                game_id = game_id.strip()
+                game_id = game_id.split(" ", 1)
+
+                if game_id[0] == "new":
+                    if len(game_id) == 2:
+                        name = game_id[1]
+                    else:
+                        name = "NEW game"
+                    player = 1
+                    json_response = await fetch(session, 'http://' + host + ":" + str(port) + "/start?name="+str(name))
+                    json_data = json.loads(json_response)
+                    game_id = json_data["id"]
+                    print("Byla zalozena nova hra s id {}.".format(game_id))
+                    print("___\n___\n___")
+                    await play(session, game_id, player)
+                    break
+                else:
+                    print ("Nekorektni vstup!")
 
 
 loop = asyncio.get_event_loop()
