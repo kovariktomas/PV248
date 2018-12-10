@@ -24,7 +24,10 @@ def new_game(self, dict):
             id = randint(1, 1000000)
 
         game_dict = {}
-        game_dict["name"] = params["name"][0]
+        try:
+            game_dict["name"] = params["name"][0]
+        except KeyError:
+            game_dict["name"] = ""
 
         board = []
         board.append([0, 0, 0])
