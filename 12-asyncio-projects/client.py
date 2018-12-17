@@ -37,13 +37,13 @@ def print_board(board):
 async def list_games(json_data, session):
     if len(json_data) > 0:
         print ("Muzete se prihlasit do nasledujicich her:")
-        print ("ID \t\t Name")
+        #print ("ID Name")
         for game in json_data:
             json_response = await fetch(session, 'http://' + str(sys.argv[1]) + ":" + str(sys.argv[2]) + "/status?game=" + str(game["id"]))
             json_data = json.loads(json_response)
             if "board" in json_data:
                 if empty_board(json_data["board"]):
-                    print ("{} \t\t {}".format(game["id"], game["name"]))
+                    print ("{} {}".format(game["id"], game["name"]))
         print("Zadejte id hry, nebo zalozte novou hru napsanim \"new\": ", sep='', end='')
         game_id = input()
         return game_id
@@ -149,7 +149,7 @@ async def main():
                     if len(game_id) == 2:
                         name = game_id[1]
                     else:
-                        name = "NEW game"
+                        name = ""
                     player = 1
                     json_response = await fetch(session, 'http://' + host + ":" + str(port) + "/start?name="+str(name))
                     json_data = json.loads(json_response)

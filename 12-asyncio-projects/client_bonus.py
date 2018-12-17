@@ -64,7 +64,7 @@ async def game_intro(session):
         await list_games(session)
 
         pygame.display.update()
-        clock.tick(15)
+        clock.tick(10)
 
 
 async def button(msg,x,y,w,h,ic,ac,gameDisplay, action=None, params=None):
