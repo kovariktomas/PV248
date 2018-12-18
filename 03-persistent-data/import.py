@@ -448,7 +448,7 @@ def main():
 
     dbname = sys.argv[2]
 
-    open(dbname, 'w').close()
+    open(dbname, 'r').close()
 
     conn = sqlite3.connect(dbname)
 
